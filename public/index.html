@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addTaskButton = document.getElementById('add-task');
+            const taskInput = document.getElementById('task-input');
+            const taskList = document.getElementById('task-list');
+
+            // Load tasks from local storage
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.forEach(task => addTaskToDOM(task));
+
+            // Add task to the list
+            addTaskButton.addEventListener('click', () => {
+                const taskValue = taskInput.value;
+                if (taskValue) {
+                    addTaskToDOM(taskValue);
+                    tasks.push(taskValue);
+                    localStorage.setItem('tasks', JSON.stringify(tasks));
+                    taskInput.value = '';
+                }
+            });
+
+            // Function to add task to DOM
+            function addTaskToDOM(task) {
+                const li = document.createElement('li');
+                li.textContent = task;
+                taskList.appendChild(li);
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <input type="text" id="task-input" placeholder="Add a new task">
+    <button id="add-task">Add Task</button>
+    <ul id="task-list"></ul>
+</body>
+</html>

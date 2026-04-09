@@ -1,43 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const addTaskButton = document.getElementById('add-task');
-            const taskInput = document.getElementById('task-input');
-            const taskList = document.getElementById('task-list');
+<meta charset="UTF-8">
+<title>جرد الضباط</title>
 
-            // Load tasks from local storage
-            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-            tasks.forEach(task => addTaskToDOM(task));
-
-            // Add task to the list
-            addTaskButton.addEventListener('click', () => {
-                const taskValue = taskInput.value;
-                if (taskValue) {
-                    addTaskToDOM(taskValue);
-                    tasks.push(taskValue);
-                    localStorage.setItem('tasks', JSON.stringify(tasks));
-                    taskInput.value = '';
-                }
-            });
-
-            // Function to add task to DOM
-            function addTaskToDOM(task) {
-                const li = document.createElement('li');
-                li.textContent = task;
-                taskList.appendChild(li);
-            }
-        });
-    </script>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f0f0f;
+  color:white;
+  direction:rtl;
+}
+.container{
+  max-width:500px;
+  margin:60px auto;
+  background:#1c1c1c;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+}
+h2{color:gold}
+input, select{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:8px;
+  background:#111;
+  color:white;
+}
+button{
+  width:95%;
+  padding:10px;
+  background:gold;
+  border:0;
+  font-weight:bold;
+  border-radius:8px;
+}
+.section{margin-top:20px;border-top:1px solid #333;padding-top:10px}
+.result{margin-top:15px;color:gold}
+</style>
 </head>
+
 <body>
-    <h1>To-Do List</h1>
-    <input type="text" id="task-input" placeholder="Add a new task">
-    <button id="add-task">Add Task</button>
-    <ul id="task-list"></ul>
+
+<div class="container">
+
+<h2>🎖️ جرد الضباط</h2>
+
+<div class="section">
+<h3>➕ إضافة</h3>
+<input id="u">
+<select id="c">
+  <option value="1327591433024176148">روم 1</option>
+  <option value="1327594383926624276">روم 2</option>
+</select>
+
+<select id="r">
+  <option value="taweef">توظيف</option>
+  <option value="ta3meed">تعميد</option>
+</select>
+
+<input type="date" id="d">
+<button onclick="add()">إضافة</button>
+</div>
+
+<div class="section">
+<h3>📊 حساب</h3>
+
+<input id="cu">
+<input type="date" id="fd">
+
+<select id="rr">
+  <option value="">الكل</option>
+  <option value="taweef">توظيف</option>
+  <option value="ta3meed">تعميد</option>
+</select>
+
+<button onclick="count()">حساب</button>
+
+<div class="result" id="res"></div>
+</div>
+
+</div>
+
+<script>
+async function add(){
+  await fetch("/add",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      userId:u.value,
+      channel:c.value,
+      role:r.value,
+      date:d.value
+    })
+  });
+  alert("تم ✔");
+}
+
+async function count(){
+  let res = await fetch("/count",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      userId:cu.value,
+      fromDate:fd.value,
+      role:rr.value
+    })
+  });
+
+  let data = await res.json();
+  document.getElementById("res").innerText = "عدد الجرد: " + data.count;
+}
+</script>
+
 </body>
 </html>
